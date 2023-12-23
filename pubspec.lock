@@ -585,7 +585,7 @@ packages:
     source: hosted
     version: "2.1.0"
   path:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: path
       sha256: "8829d8a55c13fc0e37127c29fedf290c102f4e40ae94ada574091fe0ff96c917"
@@ -840,10 +840,11 @@ packages:
   starknet:
     dependency: "direct main"
     description:
-      name: starknet
-      sha256: "6504af2a42d3ba421c117a5f30f3e79aa2d69ede3b840a24de0f35eb1ea2962d"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/starknet"
+      ref: "fix/no-account-nonce-fallback"
+      resolved-ref: d50de655cbd2311a7032fdd30fdb473f71a34eb4
+      url: "https://github.com/ptisserand/starknet.dart"
+    source: git
     version: "0.1.0"
   starknet_builder:
     dependency: "direct dev"
@@ -861,6 +862,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.2"
+  starknet_provider:
+    dependency: "direct main"
+    description:
+      path: "packages/starknet_provider"
+      ref: "fix/no-account-nonce-fallback"
+      resolved-ref: d50de655cbd2311a7032fdd30fdb473f71a34eb4
+      url: "https://github.com/ptisserand/starknet.dart"
+    source: git
+    version: "1.0.0"
   stream_channel:
     dependency: transitive
     description:

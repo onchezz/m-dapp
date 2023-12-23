@@ -1,7 +1,7 @@
 // import 'package:account_connect/test_packages/relayer_service.dart';
 // ignore_for_file: avoid_print
 
-import 'package:account_connect/test_packages/relayer_service.dart';
+import './relayer_service.dart';
 import 'package:flutter/material.dart';
 import 'package:starknet/starknet.dart';
 
@@ -34,7 +34,7 @@ class _RelayerState extends State<Relayer> {
 
   Future _getPersonalBal() async {
     print('getting personal reayer balance');
-    int bal = await viewUserBalance();
+    int bal = await viewRelayerVaultBalance();
     setState(() {
       _relayerBal = bal;
     });
@@ -56,6 +56,14 @@ class _RelayerState extends State<Relayer> {
 
     // await approveUsdcToken(amount);
     await regesteringUser(amount);
+    _amount.clear();
+  }
+
+  Future _depositTokens() async {
+    // int amount = int.parse(_amount.text.trim());
+    print(" depositing tokens  ");
+
+    await depositTokens(_amount.text.trim());
     _amount.clear();
   }
 
@@ -143,10 +151,10 @@ class _RelayerState extends State<Relayer> {
                   const SizedBox(
                     width: 10,
                   ),
-                  //   ElevatedButton(
-                  //     onPressed: (() => _getPersonalBal()),
-                  //     child: const Text('relayer vault bal'),
-                  //   ),
+                  ElevatedButton(
+                    onPressed: (() => _depositTokens()),
+                    child: const Text('deposit tokens'),
+                  ),
                 ],
               ),
             ],

@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:starknet/starknet.dart';
+import 'package:starknet_provider/starknet_provider.dart';
 
 final provider = JsonRpcProvider(
   nodeUri: Uri.parse(
@@ -16,11 +17,11 @@ final contractAddress =
 final secretAccountAddress =
     "0x0784a3B8B98ED10224998d42dcF800Bdf6641372ba1C1c6a3fb39263AD68648D";
 final secretAccountPrivateKey =
-    "0x022f7145a84f24a15b9d8174da80786d8e435d9171481b9d9cc990c13be67697";
+    "0x03efaef171afc28c4916ad4c18c058ceeda5830244b1d5bf155465d673d0624d";
 final signerAccount = getAccount(
   accountAddress: Felt.fromHexString(secretAccountAddress),
   privateKey: Felt.fromHexString(secretAccountPrivateKey),
-  nodeUri: infuraGoerliTestnetUri,
+  nodeUri: provider.nodeUri,
 );
 
 //view functions
@@ -32,7 +33,6 @@ Future viewUserBalance() async {
       entryPointSelector: getSelectorByName("view_user_balance"),
       calldata: [
         signerAccount.accountAddress,
-        // Felt.fromHexString(secretAccountAddress),
       ],
     ),
     blockId: BlockId.latest,
@@ -88,15 +88,6 @@ Future getSignerWalletBal() async {
 
 Future approveUsdcToken(int amount) async {
   final tokenamount = amount * pow(10, 6);
-  final result = await provider.call(
-    request: FunctionCall(
-      contractAddress: signerAccount.accountAddress,
-      entryPointSelector: getSelectorByName("get_nonce"),
-      calldata: [],
-    ),
-    blockId: BlockId.latest,
-  );
-  print("approving usdc tokens $result ");
   final res = await signerAccount.execute(
     functionCalls: [
       FunctionCall(
@@ -107,10 +98,11 @@ Future approveUsdcToken(int amount) async {
         calldata: [
           Felt.fromHexString(contractAddress),
           Felt.fromInt(tokenamount.toInt()),
+          Felt.fromInt(0),
         ],
       ),
     ],
-    nonce: defaultNonce,
+    // maxFee: defaultMaxFee,
   );
 
   print(
@@ -128,61 +120,23 @@ Future approveUsdcToken(int amount) async {
 
   return "txHash";
 }
-// print(
-//   res.when(
-//     result: (result) => result.toString(),
-//     error: (error) => throw Exception(error),
-//   ),
-// );
-
-// final txHash = res.when(
-//   result: (result) => result.transaction_hash,
-//   error: (err) => throw Exception("Failed to execute"),
-// );
-
-// Future<String> regesteringUser(int amount) async {
-//   print('regstering.....');
-
-// ignore: await_only_futures
-// final res = await signerAccount.getNonce().toString();
-// execute(
-//   functionCalls: [
-//     FunctionCall(
-//       contractAddress: Felt.fromHexString(contractAddress),
-//       entryPointSelector: getSelectorByName('register'),
-//       calldata: [Felt.fromIntString(amount)],
-//     ),
-//   ],
-// );
-
-// print(
-//   res.toString(),
-//   // res.when(
-//   //   result: (result) => result.toString(),
-//   //   error: (error) => throw Exception(error),
-//   // ),
-// );
-
-// final txHash = res.when(
-//   result: (result) => result.transaction_hash,
-//   error: (err) => throw Exception("Failed to execute"),
-// );
-// print('regester user transaction result:$txHash');
-//   return '';
-//   // return waitForAcceptance(transactionHash: txHash, provider: provider);
-// }
 
 Future<String> regesteringUser(int amount) async {
   print('regstering.....');
-
+  final tokenamount = amount * pow(10, 6);
   final res = await signerAccount.execute(
     functionCalls: [
       FunctionCall(
         contractAddress: Felt.fromHexString(contractAddress),
         entryPointSelector: getSelectorByName('register'),
-        calldata: [Felt.fromInt(amount)],
+        calldata: [
+          // Felt.fromInt(amount)
+          Felt.fromInt(tokenamount.toInt()),
+          Felt.fromInt(0),
+        ],
       ),
     ],
+    maxFee: defaultMaxFee,
   );
 
   print(
@@ -208,8 +162,11 @@ Future<String> depositTokens(String amount) async {
     functionCalls: [
       FunctionCall(
         contractAddress: Felt.fromHexString(contractAddress),
-        entryPointSelector: getSelectorByName('withdraw'),
-        calldata: [Felt.fromIntString(amount)],
+        entryPointSelector: getSelectorByName('relay_deposit'),
+        calldata: [
+          Felt.fromIntString(amount),
+          Felt.fromInt(0),
+        ],
       ),
     ],
   );

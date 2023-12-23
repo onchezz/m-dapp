@@ -1,4 +1,4 @@
-import 'package:account_connect/test_packages/relayer_ui.dart';
+import './test_packages/relayer_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'package:starknet/starknet.dart';
